@@ -3,6 +3,9 @@ import Greeting from "./Greeting.js";
 import SubmitCounts from "./SubmitCounts.js";
 import "./App.css";
 import SubmitButton from "./SubmitButton.js";
+import {ButtonContext, btnInfo} from './button-context.js'
+
+
 
 function ContactForm() {
   const initialState = {
@@ -14,17 +17,15 @@ function ContactForm() {
   const [inputName, setInputName] = useState(initialState);
   const [count, setCount] = useState(0);
   const [submittedArray, setSubmittedArray] = useState([]);
+  const [btnState, setBtnState] = useState(btnInfo.disabled)
 
   const inputRef = useRef();
 
-  console.log(`Submitted array is ${submittedArray.length} long.`);
-  for (var i = 0; i < submittedArray.length; i++) {
-    console.log(`Names submitted are ${submittedArray[i].firstName}`);
-  }
+  
+
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(event.target.firstName.value);
 
     const newData = {
       firstName: event.target.firstName.value,
@@ -32,34 +33,19 @@ function ContactForm() {
       desc: inputRef.current.value,
     };
 
-    // var partialState = {};
-    // partialState["desc"] = inputRef.current.value;
-    // setInputName((inputName) => {
-    //   return {
-    //     ...inputName,
-    //     ...partialState,
-    //   };
-    // });
-
     if (
-      //   inputName.firstName === initialState.firstName ||
-      //   inputName.lastName === initialState.lastName
       newData.firstName === initialState.firstName ||
       newData.lastName === initialState.lastName
     ) {
       alert("oops you forgot something");
+     
     } else {
       setCount((C) => C + 1);
       console.log(`Submitted ${count} times.`);
       const newArray = submittedArray.slice();
-      //   newArray.push(inputName);
       newArray.push(newData);
       setSubmittedArray(newArray);
-      //   console.log(`Submitted array is ${submittedArray.length} long.`);
-      //   for (var i = 0; i < submittedArray.length; i++) {
-      //     console.log(`Names submitted are ${submittedArray[i].firstName}`);
-      //   }
-      // setSubmittedArray(inputName);
+    
     }
   }
 
@@ -69,11 +55,25 @@ function ContactForm() {
       ...inputName,
       [event.target.name]: result,
     });
+ 
+
+    if(inputName.firstName === "" || inputName.lastName === "" ){
+        setBtnState(btnState => btnState = btnInfo.disabled);
+    }
+    else{
+        
+        setBtnState(btnState => btnState = btnInfo.enabled);
+      }
+
+      console.log(`Context color ${btnState.color}`)
+      
+   
   }
 
   useEffect(() => {
     function cleanForm() {
       setInputName(initialState);
+      setBtnState(btnInfo.disabled);
     }
     if (count != 0) {
       setTimeout(() => {
@@ -112,11 +112,17 @@ function ContactForm() {
           Describe yourself (optional):
           <textarea ref={inputRef}></textarea>
         </label>
-        <SubmitButton inputState={inputName} />
+        {/* <SubmitButton inputState={inputName} /> */}
+      <ButtonContext.Provider value={btnState}>
+            {/* <button type="submit" style={{backgroundColor: btnInfo.color}}>{btnInfo.text}</button> */}
+            <SubmitButton />
+        </ButtonContext.Provider>
       </form>
       <SubmitCounts inputs={count} submitters={submittedArray} />
     </div>
   );
 }
+
+
 
 export default ContactForm;
