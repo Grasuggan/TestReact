@@ -10,8 +10,8 @@ function Submitted(props) {
          <>
        <img src={tomatoAv} />
            <div className="info">
-            <div>{props.inputs.firstName } {props.inputs.lastName} <span>submitted {time}</span>.</div>
-           <div className="description"><span>Description:</span> {props.inputs.desc}</div>
+            <div>{props.submit.firstName } {props.submit.lastName} <span>submitted {time}</span>.</div>
+           <div className="description"><span>Description:</span> {props.submit.desc}</div>
            </div>
         </>
      )
